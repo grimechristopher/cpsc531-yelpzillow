@@ -26,16 +26,19 @@ def request_codes_in_radius(center_code, radius):
     response = requests.get(base_url, headers=headers, params=params)
     data = response.json()
 
+    # Use spark to read th csv
     spark = SparkSession.builder.appName('cluster_create').getOrCreate()
     df = spark.read.csv('input/zillow/singlefamily_by_zipcode.csv', header=True)
 
     def process_row(row):
         return row['RegionName'], row['City'], row['2024-03-31']
 
+    # use spark to process the data 
     processed_data = df.rdd.map(process_row)
 
     results = processed_data.collect()
 
+    # Add the ZVHI from zillow to the results of the zip and calculate the average zhvi for a cluster
     zhvi_sum = 0
     zhvi_count = 0
     for result in data['results']:
@@ -52,5 +55,6 @@ def request_codes_in_radius(center_code, radius):
         average_zhvi = zhvi_sum / zhvi_count
         data['query']['average_zhvi'] = average_zhvi
 
+    # Save the CSV to a file
     with open('input/cluster/'+ center_code +'.json', 'w') as file:
         json.dump(data, file)

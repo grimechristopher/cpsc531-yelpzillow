@@ -32,6 +32,7 @@ def request_restaurants_in_zipcode(zipcode):
     with open('input/yelp/restaurants/'+ zipcode +'.json', 'w') as file:
         json.dump(data, file)
 
+# Method to request Starbucks in a zipcode and save to a file [zip].json
 def request_starbucks_in_zipcode(zipcode):
     base_url = 'https://api.yelp.com/v3/businesses/search'
     params = {
@@ -47,6 +48,7 @@ def request_starbucks_in_zipcode(zipcode):
     with open('input/yelp/starbucks/'+ zipcode +'.json', 'w') as file:
         json.dump(data, file)
 
+# Method to gather restaurants in zip codes that have not been searched yet
 def gather_restaurants():
   spark = SparkSession.builder.appName("Yelp Restaurant Collector").getOrCreate()
 
@@ -68,7 +70,7 @@ def gather_restaurants():
   restaurant_cluster_df = restaurant_cluster_df.dropDuplicates() # No duplicates please
 
   starbucks_cluster_df = spark.read.option("multiline",True).json("input/cluster")
-  starbucks_cluster_df = starbucks_cluster_df.select(explode("results").alias("result"))
+  starbucks_cluster_df = starbucks_cluster_df.select(explode("results").alias("result")) # I want the results obj from the json
   starbucks_cluster_df = starbucks_cluster_df.filter(col("result.zhvi").isNotNull())
   starbucks_cluster_df = starbucks_cluster_df.filter(~col("result.code").isin(broadcasted_starbucks_zipcodes.value))
   starbucks_cluster_df = starbucks_cluster_df.select("result.code")

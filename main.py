@@ -1,5 +1,5 @@
 from query_zipcodebase import request_codes_in_radius
-from query_yelp import request_restaurants_in_zipcode, gather_restaurants
+from query_yelp import gather_restaurants
 # from analyze import average_restaurant_rating_vs_home_value, price_correlation_between_starbucks_and_home_value, correlation_between_number_of_ratings_and_rating, restaurant_count_correlation_to_rating, ratings_vs_extreme
 import json
 
