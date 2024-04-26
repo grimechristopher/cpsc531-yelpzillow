@@ -6,6 +6,3 @@ input/zillow/*
 yelp/restaurants/*
 yelp/starbucks/*
 ENV/
-
-# Too large
-input/zillow/singlefamily_by_zipcode.csv
