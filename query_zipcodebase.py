@@ -27,7 +27,7 @@ def request_codes_in_radius(center_code, radius):
     data = response.json()
 
     # Use spark to read th csv
-    spark = SparkSession.builder.appName('cluster_create').getOrCreate()
+    spark = SparkSession.builder.master("local[8]").appName('cluster_create').getOrCreate()
     df = spark.read.csv('input/zillow/singlefamily_by_zipcode.csv', header=True)
 
     def process_row(row):
