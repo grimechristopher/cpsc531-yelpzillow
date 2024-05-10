@@ -50,7 +50,8 @@ def request_starbucks_in_zipcode(zipcode):
 
 # Method to gather restaurants in zip codes that have not been searched yet
 def gather_restaurants():
-  spark = SparkSession.builder.master("local[8]").appName("Yelp Restaurant Collector").getOrCreate()
+  # Limit number of cores to prevent hitting api limit
+  spark = SparkSession.builder.master("local[3]").appName("Yelp Restaurant Collector").getOrCreate()
 
   # Save my API requests by only calling requests for zipcodes I havent checked before
   with open('cluster_input.json') as file:
